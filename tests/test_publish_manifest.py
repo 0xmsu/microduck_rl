@@ -211,6 +211,23 @@ def test_the_readme_puts_the_repo_under_the_robotics_pipeline():
     ep = m.build_manifest(name="bow", kind="episodic", description="Bows.", duration_s=4.0)
     front = m.render_readme(ep, "someone/microduck-bow").split("---")[1]
     assert "pipeline_tag: robotics" in front.splitlines()
+    assert "base_model" not in front, "an original policy declares no parent"
+
+
+def test_a_remix_declares_its_base_model():
+    ep = m.build_manifest(name="bow", kind="episodic", description="Bows.", duration_s=4.0)
+    text = m.render_readme(ep, "someone/microduck-deep-bow", base_model="pollen/microduck-bow")
+    front = text.split("---")[1].splitlines()
+    assert "base_model: pollen/microduck-bow" in front
+    assert "base_model_relation: finetune" in front
+    assert "https://huggingface.co/pollen/microduck-bow" in text
+
+
+@pytest.mark.parametrize("base", ["microduck-bow", "a/b/c", "", "someone/microduck-bow"])
+def test_a_bad_base_model_is_refused(base):
+    ep = m.build_manifest(name="bow", kind="episodic", description="Bows.", duration_s=4.0)
+    with pytest.raises(m.ManifestError, match="base_model"):
+        m.render_readme(ep, "someone/microduck-bow", base_model=base)
 
 
 # -- the ONNX gate ------------------------------------------------------------------------------

@@ -53,6 +53,10 @@ class PublishConfig:
     video: str | None = None
     """An MP4 of the policy running (e.g. from scripts/render_policy.py). Uploaded as replay.mp4."""
 
+    base_model: str | None = None
+    """Remix: the Hub repo of the policy this one was trained from (warm start / fine-tune).
+    Declared as `base_model` in the model card so the Hub links the two."""
+
     # -- what the manifest says
     name: str | None = None
     """What a client asks for (`robotctl robot do <name>`). Default: the repo's stem minus `microduck-`."""
@@ -181,7 +185,7 @@ def run(cfg: PublishConfig) -> int:
         staged.mkdir()
         shutil.copyfile(onnx_path, staged / m.POLICY_FILE)
         (staged / "manifest.json").write_text(m.dump_manifest(manifest))
-        (staged / "README.md").write_text(m.render_readme(manifest, cfg.repo))
+        (staged / "README.md").write_text(m.render_readme(manifest, cfg.repo, cfg.base_model))
         if video is not None:
             shutil.copyfile(video, staged / m.REPLAY_FILE)
 
@@ -196,6 +200,8 @@ def run(cfg: PublishConfig) -> int:
         from huggingface_hub import HfApi
 
         api = HfApi()
+        if cfg.base_model is not None and not api.repo_exists(cfg.base_model, repo_type="model"):
+            _fail(f"--base-model {cfg.base_model}: no such model repo on the Hub (or no access)")
         api.create_repo(cfg.repo, repo_type="model", private=cfg.private, exist_ok=True)
         existing = set(api.list_repo_files(cfg.repo))
         onnx_files = {f for f in existing if f.endswith(".onnx")}
