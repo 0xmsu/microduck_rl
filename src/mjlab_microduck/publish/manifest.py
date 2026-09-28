@@ -30,6 +30,10 @@ ROBOT: dict[str, Any] = {"model": "microduck", "hw_rev": 1, "servos": "xl330", "
 # The one `.onnx` a repo carries. The daemon takes the sole `.onnx` in a repo and refuses several.
 POLICY_FILE = "policy.onnx"
 
+# A rollout video, if the repo carries one. The Hub's replay widget picks up a file of exactly
+# this name, so it is shown there and neither the manifest nor the README points at it.
+REPLAY_FILE = "replay.mp4"
+
 Kind = Literal["episodic", "perpetual"]
 KINDS: tuple[str, ...] = ("episodic", "perpetual")
 
@@ -353,6 +357,7 @@ def render_readme(manifest: dict[str, Any], repo_id: str) -> str:
         "- reinforcement-learning",
         "- onnx",
         "library_name: onnx",
+        "pipeline_tag: robotics",
         "---",
         "",
         f"# {name}",

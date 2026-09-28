@@ -187,7 +187,7 @@ this repo).
 daemon loads: one `policy.onnx` with the observation normalizer baked in, a
 `manifest.json` following schema 2 of the
 [microduck policy manifest](https://github.com/pollen-robotics/microduck/blob/main/docs/policy-manifest.md),
-and a README saying how to run it. Anyone with a microduck can then install it
+and a README saying how to run it (tagged with the `robotics` pipeline). Anyone with a microduck can then install it
 with one command, no daemon release needed.
 
 ```bash
@@ -203,6 +203,11 @@ uv run publish --onnx output.onnx --repo <user>/microduck-flamingo \
 
 # A new gait for a slot
 uv run publish --onnx output.onnx --repo <user>/microduck-my-walk --kind perpetual --slot walk
+
+# Ship a rollout video too: uploaded as replay.mp4, which the Hub's replay widget plays
+uv run scripts/render_policy.py output.onnx --seconds 10 --video media/bow.mp4
+uv run publish --onnx output.onnx --repo <user>/microduck-bow --kind episodic --duration-s 4.0 \
+    --video media/bow.mp4
 
 # See what would be uploaded without touching the Hub
 uv run publish --onnx output.onnx --repo <user>/microduck-bow --kind episodic --duration-s 4.0 --dry-run
