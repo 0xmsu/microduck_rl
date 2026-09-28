@@ -187,7 +187,7 @@ this repo).
 daemon loads: one `policy.onnx` with the observation normalizer baked in, a
 `manifest.json` following schema 2 of the
 [microduck policy manifest](https://github.com/pollen-robotics/microduck/blob/main/docs/policy-manifest.md),
-and a README saying how to run it (tagged with the `robotics` pipeline). Anyone with a microduck can then install it
+and a README saying how to run it. Anyone with a microduck can then install it
 with one command, no daemon release needed.
 
 ```bash
