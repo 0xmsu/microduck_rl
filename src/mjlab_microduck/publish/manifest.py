@@ -364,6 +364,8 @@ def render_readme(manifest: dict[str, Any], repo_id: str, base_model: str | None
         "- robotics",
         "- reinforcement-learning",
         "- onnx",
+        # The Hub's `robotctl policy load <slot>` snippet reads the slot from this tag.
+        *([f"- microduck-slot:{manifest['slot']}"] if manifest.get("slot") else []),
         "library_name: microduck",
         "pipeline_tag: robotics",
         *([f"base_model: {base_model}", "base_model_relation: finetune"] if base_model else []),

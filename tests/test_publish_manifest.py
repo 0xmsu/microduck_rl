@@ -214,6 +214,14 @@ def test_the_readme_puts_the_repo_under_the_robotics_pipeline():
     assert "base_model" not in front, "an original policy declares no parent"
 
 
+def test_a_gait_tags_its_slot_for_the_hub_snippet():
+    gait = m.build_manifest(name="my-walk", kind="perpetual", description="d", slot="walk")
+    front = m.render_readme(gait, "u/microduck-my-walk").split("---")[1].splitlines()
+    assert "- microduck-slot:walk" in front
+    no_slot = m.build_manifest(name="bow", kind="episodic", description="d", duration_s=4.0)
+    assert "microduck-slot" not in m.render_readme(no_slot, "u/microduck-bow")
+
+
 def test_a_remix_declares_its_base_model():
     ep = m.build_manifest(name="bow", kind="episodic", description="Bows.", duration_s=4.0)
     text = m.render_readme(ep, "someone/microduck-deep-bow", base_model="pollen/microduck-bow")
